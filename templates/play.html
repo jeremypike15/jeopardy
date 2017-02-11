@@ -12,7 +12,7 @@
 				<h1 ng-bind="category.name"></h1>
 				<ul>
 					<li ng-repeat="question in category.questions" class="question" ng-click="questionClick(category.name,question.value)" ng-class="{'transparent': question.show != 'value'}">
-						<div class="value" ng-if="question.show == 'value'">${{ question.value }}</div>
+						<div class="value" ng-if="question.show == 'value'">${% verbatim %}{{ question.value }}{% endverbatim %}</div>
 					</li>
 				</ul>
 			</div>
