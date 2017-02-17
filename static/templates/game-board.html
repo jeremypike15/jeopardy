@@ -1,0 +1,20 @@
+<div id="board" ng-class="{'visible': uistate.board_loaded}">
+	<div class="category" ng-repeat="category in game.categories" ng-if="isValidCategory(category)">
+		<h1 ng-bind="category.data.name"></h1>
+		<ul>
+			<li ng-repeat="question in category.data.clues | orderBy:'placement'" class="question" ng-click="questionClick(question)" ng-class="{'transparent': question.show == 'none'}">
+				<div class="value" ng-if="question.show != 'none'" ng-bind="questionValue(question)"></div>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div id="question_modal" ng-if="current_question" ng-click="currentQuestionClick()">
+	<video autoplay ng-if="current_question.show == 'daily-double'" ng-src="{{ staticUrl('mov/daily-double.mp4') }}"></video>
+	<div ng-bind="current_question.clue" ng-if="current_question.show == 'question' && current_question.clue_type == 'text'"></div>
+	<video 
+		autoplay 
+		ng-src="{{ current_question.clue }}" 
+		ng-if="current_question.show == 'question' && current_question.clue_type == 'video'"></video>
+	<div ng-bind="current_question.answer" ng-if="current_question.show == 'answer'"></div>
+</div>

@@ -1,0 +1,8 @@
+<div id="final-jeopardy">
+	<img ng-src="{{ staticUrl('img/final-jeopardy.png') }}">
+	<div class="final-container" ng-class="{'visible': final_jeopardy.show != 'none'}" ng-click="finalJeopardyClick()">
+		<div class="text" ng-bind="final_jeopardy.data.name" ng-if="final_jeopardy.show === 'category'"></div>
+		<div class="text" ng-bind="final_jeopardy.data.clues[0].clue" ng-if="final_jeopardy.show === 'question'"></div>
+		<div class="text" ng-bind="final_jeopardy.data.clues[0].answer" ng-if="final_jeopardy.show === 'answer'"></div>
+	</div>
+</div>

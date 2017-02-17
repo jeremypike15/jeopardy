@@ -1,29 +1,22 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html ng-app="jeopardy">
 	<head>
 		<title>Jeopardy</title>
-		<link rel="stylesheet" href="static/css/jeopardy.css">
+		<link rel="stylesheet" href="{% static 'css/jeopardy.css' %}">
 	</head>
 	<body ng-controller="game">
-		<video src="static/mov/intro.mp4"></video>
+		<video src="{% static 'mov/intro.mp4' %}"></video>
 		
-		<div id="board" ng-class="{'visible': uistate.board_loaded}">
-			<div class="category" ng-repeat="category in categories">
-				<h1 ng-bind="category.name"></h1>
-				<ul>
-					<li ng-repeat="question in category.questions" class="question" ng-click="questionClick(category.name,question.value)" ng-class="{'transparent': question.show != 'value'}">
-						<div class="value" ng-if="question.show == 'value'">${% verbatim %}{{ question.value }}{% endverbatim %}</div>
-					</li>
-				</ul>
-			</div>
-		</div>
+		<game-board ng-if="!game.final_jeopardy"></game-board>
+		<final-jeopardy ng-if="game.final_jeopardy"></final-jeopardy>
 		
-		<div id="question_modal" ng-if="current_question" ng-click="currentQuestionClick()">
-			<div ng-bind="current_question.question" ng-if="current_question.show == 'question'"></div>
-			<div ng-bind="current_question.answer" ng-if="current_question.show == 'answer'"></div>
-		</div>
-		
-		<script type="text/javascript" src="static/js/angular.min.js"></script>
-		<script type="text/javascript" src="static/js/jeopardy.js"></script>
+		<script type="text/javascript" src="{% static 'js/angular.min.js' %}"></script>
+		<script>
+			window.GAME_ID = '{{ pk }}';
+			window.STATIC_URL = {% static '' %};
+		</script>
+		<script type="text/javascript" src="{% static 'js/jeopardy.js' %}"></script>
 	</body>
 </html>

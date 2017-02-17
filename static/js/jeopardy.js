@@ -3,13 +3,13 @@
 	'use strict';
 	
 	angular.module('jeopardy', [])
-	.controller('game', ['$scope', '$document', '$timeout', 'video', function ($scope, $document, $timeout, video) {
+	.controller('game', ['$scope', '$document', '$timeout', '$http', 'video', function ($scope, $document, $timeout, $http, video) {
 		
 		if(location.href.match(/\?reset/)) {
 			if(window.confirm("Reset game?")) {
-				localStorage.removeItem("categories");
+				localStorage.removeItem("game_" + window.GAME_ID);
 			}
-			window.location = "/";
+			window.location = window.location.href.split("?")[0];
 		}
 		
 		$scope.apply = function(){
@@ -18,269 +18,183 @@
 			}
 		};
 		
-		/* Start Categories/Questions */
-		if(!localStorage.getItem("categories")){
-			$scope.categories = [
-				{
-					name: "Heroes",
-					questions: [
-						{
-							value: 200,
-							question: "He was called \"a man after God's own heart\"",
-							answer: "David",
-							show: "value"
-						},
-						{
-							value: 400,
-							question: "He pushed down the pillars of a temple, burying himself and about 3,000 Philistines alive",
-							answer: "Samson",
-							show: "value"
-						},
-						{
-							value: 600,
-							question: "He asked God for wisdom instead of money, power, or a long life...God gave him all four",
-							answer: "Solomon",
-							show: "value"
-						},
-						{
-							value: 800,
-							question: "They refused to worship an idol, and were thrown into a furnace. However, God protected them, and they did not die",
-							answer: "Shadrach, Meshach, Abednego",
-							show: "value"
-						},
-						{
-							value: 1000,
-							question: "He was the first Christian martyr, being stoned to death after preaching a sermon.",
-							answer: "Stephen",
-							show: "value"
-						}
-					]
-				},
-				{
-					name: "Geography",
-					questions: [
-						{
-							value: 200,
-							question: "Jesus grew up in this city",
-							answer: "Nazareth",
-							show: "value"
-						},
-						{
-							value: 400,
-							question: "This is where Moses was given the Ten Commandments",
-							answer: "Mount Sinai",
-							show: "value"
-						},
-						{
-							value: 600,
-							question: "These places were destroyed by fire and brimstone, as punishment for their wickedness",
-							answer: "Sodom and Gomorrah",
-							show: "value"
-						},
-						{
-							value: 800,
-							question: "Naaman was the commander of this nation's army",
-							answer: "Syria",
-							show: "value"
-						},
-						{
-							value: 1000,
-							question: "Jesus was baptized here",
-							answer: "Jordan River",
-							show: "value"
-						}
-					]
-				},
-				{
-					name: "Finish the Verse",
-					questions: [
-						{
-							value: 200,
-							question: "For God so loved the __________...",
-							answer: "World (John 3:16)",
-							show: "value"
-						},
-						{
-							value: 400,
-							question: "I have been __________ with Christ...",
-							answer: "Crucified (Galatians 2:20)",
-							show: "value"
-						},
-						{
-							value: 600,
-							question: "Do not __________ any longer to the pattern of this world",
-							answer: "Conform",
-							show: "value"
-						},
-						{
-							value: 800,
-							question: "Let us __________ on Jesus, the author and perfecter of our faith",
-							answer: "Fix our eyes",
-							show: "value"
-						},
-						{
-							value: 1000,
-							question: "By this all men will know that you are my disciples, __________",
-							answer: "If you love one another",
-							show: "value"
-						}
-					]
-				},
-				{
-					name: "Numbers",
-					questions: [
-						{
-							value: 200,
-							question: "It took this long for God to create everything",
-							answer: "Six Days",
-							show: "value"
-						},
-						{
-							value: 400,
-							question: "This many people were on board the ark",
-							answer: "Eight",
-							show: "value"
-						},
-						{
-							value: 600,
-							question: "This many prophets of Baal were at Mount Carmel with Elijah",
-							answer: "450",
-							show: "value"
-						},
-						{
-							value: 800,
-							question: "Joseph prophesied this many years of famine in Egypt",
-							answer: "Seven",
-							show: "value"
-						},
-						{
-							value: 1000,
-							question: "Enoch was this old when God took him",
-							answer: "365",
-							show: "value"
-						}
-					]
-				},
-				{
-					name: "Which Was 1st?",
-					questions: [
-						{
-							value: 200,
-							question: "The Exodus or The Flood?",
-							answer: "The Flood",
-							show: "value"
-						},
-						{
-							value: 400,
-							question: "Ecclesiastes or Esther?",
-							answer: "Esther",
-							show: "value"
-						},
-						{
-							value: 600,
-							question: "Jesus' Baptism or Feeding of the 5000?",
-							answer: "Jesus' Baptism",
-							show: "value"
-						},
-						{
-							value: 800,
-							question: "Beheading of John the Baptist or Jesus Walking on Water?",
-							answer: "Jesus Walking on Water",
-							show: "value"
-						},
-						{
-							value: 1000,
-							question: "The death of Job's children, or the death of Job's servants?",
-							answer: "Servants",
-							show: "value"
-						}
-					]
-				},
-				{
-					name: "Miscellaneous",
-					questions: [
-						{
-							value: 200,
-							question: "Noah sent these two birds out from the ark first",
-							answer: "Raven and Dove",
-							show: "value"
-						},
-						{
-							value: 400,
-							question: "He had a coat made of camel hair",
-							answer: "John the Baptist",
-							show: "value"
-						},
-						{
-							value: 600,
-							question: "Balaam rode this type of animal",
-							answer: "Donkey",
-							show: "value"
-						},
-						{
-							value: 800,
-							question: "Horeb is this",
-							answer: "A mountain",
-							show: "value"
-						},
-						{
-							value: 1000,
-							question: "This king used a sundial",
-							answer: "Hezekiah (Isaiah 38:8)",
-							show: "value"
-						}
-					]
-				}
-			];
+		window.$scope = $scope;
+		
+		$scope.game = {};
+		$scope.loadGame = function(){
+			return $http.get('/api/v1/board/' + window.GAME_ID + '/').then(function(data){
+				$scope.game = data.data;
+				$scope.game.double_jeopardy = false;
+				$scope.game.questions_answered = 0;
+				localStorage.setItem("game_" + window.GAME_ID, JSON.stringify(data.data));
+			}, function(data){
+				window.console.log("Error loading game:", data);
+			});
 		}
-		else {
-			window.console.log("Loading existing game from localStorage...");
-			$scope.categories = JSON.parse(localStorage.getItem("categories"));
+		
+		$scope.isValidCategory = function(category){
+			if($scope.game.final_jeopardy) {
+				return category.data.final_jeopardy;
+			}
+			else if($scope.game.double_jeopardy) {
+				return category.double_jeopardy;
+			}
+			else if(!$scope.game.double_jeopardy) {
+				return (!category.double_jeopardy && !category.data.final_jeopardy);
+			}
+		}
+		
+		$scope.hasFinalJeopardy = function(){
+			return $scope.game.categories.find(function(category){ return category.data.final_jeopardy === true; }) || false;
+		}
+		
+		$scope.startFinalJeopardy = function(){
+			$scope.game.final_jeopardy = true;
+			$scope.final_jeopardy = $scope.hasFinalJeopardy();
+			$scope.final_jeopardy.show = "none";
+			
+			$timeout(function(){
+				$scope.final_jeopardy.show = "category";
+			}, 2500);
+		}
+		
+		$scope.finalJeopardyClick = function(){
+			switch($scope.final_jeopardy.show) {
+				case "category":
+					$scope.final_jeopardy.show = "question";
+					break;
+				case "question":
+					$scope.final_jeopardy.show = "answer";
+					break;
+				default:
+					$scope.final_jeopardy.show = "none";
+					$scope.game.questions_answered++;
+					$scope.final_jeopardy = null;
+					$scope.checkGameState();
+					break;
+			}
 			$scope.apply();
-			window.console.log("Game Loaded");
+			localStorage.setItem("game_" + window.GAME_ID, JSON.stringify($scope.game));
+		};
+		
+		$scope.finishGame = function(){
+			if(confirm("Thanks for playing! Restart game?")) {
+				localStorage.removeItem("game_" + window.GAME_ID);
+				window.location.reload();
+			}
 		}
-		/* End Categories/Questions */
+		
+		$scope.staticUrl = function(url) {
+			return window.STATIC_URL + url;
+		}
 		
 		$scope.uistate = {
 			board_loaded: false
 		};
 		
-		$scope.getCategory = function(category){
-			return $scope.categories.filter(function(c){
-				return c.name === category;
-			})[0];
-		};
+		$scope.checkGameState = function() {
+			/* Check if all questions are gone */
+			if(!$scope.game.double_jeopardy && $scope.game.questions_answered == 30) {
+				if($scope.game.categories.count >= 12) {
+					$scope.game.double_jeopardy = true;
+				}
+				else {
+					if($scope.hasFinalJeopardy()) {
+						$scope.startFinalJeopardy();
+					}
+					else {
+						$scope.finishGame();
+					}
+				}
+			}
+			else if($scope.game.double_jeopardy && $scope.game.questions_answered == 60) {
+				if($scope.hasFinalJeopardy()) {
+					$scope.startFinalJeopardy();
+				}
+				else {
+					$scope.finishGame();
+				}
+			}
+			else if(
+				(!$scope.game.double_jeopardy && $scope.game.questions_answered > 30) || 
+				($scope.game.double_jeopardy && $scope.game.questions_answered > 60)
+			){
+				$scope.finishGame();
+			}
+		}
 		
-		$scope.getQuestion = function(category,question){
-			return $scope.getCategory(category).questions.filter(function(q){
-				return q.value === question;
-			})[0];
-		};
+		/* Start Categories/Questions */
+		if(!localStorage.getItem("game_" + window.GAME_ID)){
+			$scope.loadGame();
+		}
+		else {
+			window.console.log("Loading existing game from localStorage...");
+			$scope.game = JSON.parse(localStorage.getItem("game_" + window.GAME_ID));
+			$scope.apply();
+			$scope.checkGameState();
+			window.console.log("Game Loaded");
+		}
+		/* End Categories/Questions */
+		
+		$scope.isDailyDouble = function(question) {
+			if($scope.game.daily_doubles.find(function(daily_double){ return daily_double == question.id })) {
+				return true;
+			}
+			
+			return false;
+		}
+		
+		$scope.questionValue = function(question) {
+			var multiplier = 1;
+			if($scope.game.double_jeopardy) multiplier = 2;
+			return '$' + (question.placement*200*multiplier);
+		}
 		
 		$scope.currentQuestionClick = function(){
-			if($scope.current_question.show === "question"){
-				$scope.current_question.show = "answer";
-			}
-			else {
-				$scope.current_question = null;
+			switch($scope.current_question.show) {
+				case "daily-double":
+					$scope.current_question.show = "question";
+					break;
+				case "question":
+					$scope.current_question.show = "answer";
+					break;
+				default:
+					$scope.current_question.show = "none";
+					$scope.game.questions_answered++;
+					$scope.current_question = null;
+					$scope.checkGameState();
+					break;
 			}
 			$scope.apply();
-			localStorage.setItem("categories", JSON.stringify($scope.categories));
+			localStorage.setItem("game_" + window.GAME_ID, JSON.stringify($scope.game));
 		};
 		
-		$scope.questionClick = function(category,question){
-			var current_state = $scope.getQuestion(category,question).show;
-			var new_state = ((current_state === "value") ? "question" : ((current_state === "question") ? "answer" : "none"));
-			$scope.getQuestion(category,question).show = new_state;
-			if(new_state === "question") {
-				$scope.current_question = $scope.getQuestion(category,question);
+		$scope.questionClick = function(question){
+			switch(question.show) {
+				case undefined:
+					question.show = ($scope.isDailyDouble(question) ? "daily-double" : "question");
+					$scope.current_question = question;
+					break;
+				case "question":
+					question.show = "answer"
+					break;
+				case "answer":
+					question.show = "none";
+					break;
 			}
 			$scope.apply();
-			localStorage.setItem("categories", JSON.stringify($scope.categories));
+			localStorage.setItem("game_" + window.GAME_ID, JSON.stringify($scope.game));
 		};
 		
 		/* Run Jeopardy */
 		$scope.init = function(){
+			
+			if(localStorage.getItem("game_" + window.GAME_ID)) {
+				$scope.uistate.board_loaded = true;
+				$scope.apply();
+				video.quiet(0);
+			}
+			
 			/* Start video intro stuff */
 			video.play();
 			
@@ -329,10 +243,18 @@
                     quiet(vol);
                 },
             };
-        }]);
+        }])
+        .directive('gameBoard', function() {
+		    return {
+		        restrict: 'E',
+		        templateUrl: function(){ return window.STATIC_URL + 'templates/game-board.html' }
+		    }
+		})
+		.directive('finalJeopardy', function() {
+		    return {
+		        restrict: 'E',
+		        templateUrl: function(){ return window.STATIC_URL + 'templates/final-jeopardy.html' }
+		    }
+		});
 
 })(window.angular);
-
-/*window.onbeforeunload = function() {
-	return "Are you sure you wish to reload the page? This will restart the Jeopardy intro!";
-};*/
