@@ -18,8 +18,6 @@
 			}
 		};
 		
-		window.$scope = $scope;
-		
 		$scope.game = {};
 		$scope.loadGame = function(){
 			return $http.get('/api/v1/board/' + window.GAME_ID + '/').then(function(data){
